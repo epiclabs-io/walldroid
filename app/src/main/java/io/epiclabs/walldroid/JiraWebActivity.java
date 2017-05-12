@@ -5,16 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,19 +17,12 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.epiclabs.walldroid.main.PreferencesActivity;
 
 /**
  * Created by adrian on 31/03/17.
@@ -43,11 +31,10 @@ public class JiraWebActivity extends AppCompatActivity {
     private WebView webView;
 
     // parameters
-    private String password;
     private String username;
-    private String url;
-    private String wallboardUrl;
-    private String usernameFieldId;
+    private String password;
+    private String jiraHost;
+    private String wallboardId;
 
     private String finalUrl;
 
@@ -55,14 +42,6 @@ public class JiraWebActivity extends AppCompatActivity {
     private boolean random;
     private Integer cyclePeriod;
     private String transitionFx;
-
-    void JiraWebActivity() {
-        this.username = "###";
-        this.password = "###";
-        this.url = "###";
-        this.wallboardUrl = "###";
-        this.usernameFieldId = "#username";
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +56,12 @@ public class JiraWebActivity extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("USERNAME");
         password = intent.getStringExtra("PASSWORD");
-        url = intent.getStringExtra("JIRA_HOST");
-        wallboardUrl = intent.getStringExtra("WALLBOARD_ID");
+        jiraHost = intent.getStringExtra("JIRA_HOST");
+        wallboardId = intent.getStringExtra("WALLBOARD_ID");
+
+        if (jiraHost.endsWith("/")) {
+            jiraHost = jiraHost.substring(0, jiraHost.length()-1);;
+        }
 
         View decorView = getWindow().getDecorView();
         // hide the status bar
@@ -88,7 +71,7 @@ public class JiraWebActivity extends AppCompatActivity {
 
 
         finalUrl = "";
-        finalUrl += url + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardUrl;
+        finalUrl += jiraHost + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardId;
         finalUrl += "&cyclePeriod=" + cyclePeriod;
         finalUrl += "&transitionFx=" + transitionFx;
         finalUrl += "&random=" + random;
@@ -118,7 +101,7 @@ public class JiraWebActivity extends AppCompatActivity {
             jsonBody = new JSONObject();
         }
 
-        JsonObjectRequest authRequest = new JsonObjectRequest("https://epiclabs.atlassian.net/rest/auth/1/session",
+        JsonObjectRequest authRequest = new JsonObjectRequest(jiraHost + "/rest/auth/1/session",
                 jsonBody,
                 new Response.Listener<JSONObject>() {
                     @Override
