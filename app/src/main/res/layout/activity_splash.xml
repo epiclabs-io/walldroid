@@ -5,5 +5,5 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@drawable/splash_screen"
-    tools:context="io.epiclabs.walldroid.SplashActivity">
+    tools:context="io.epiclabs.walldroid.main.SplashActivity">
 </LinearLayout>
