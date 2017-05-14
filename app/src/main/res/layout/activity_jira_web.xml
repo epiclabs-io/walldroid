@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.epiclabs.walldroid.JiraWebActivity">
+    tools:context="io.epiclabs.walldroid.jira.JiraWebActivity">
 
     <WebView android:id="@id/webview"
         android:layout_width="match_parent"
