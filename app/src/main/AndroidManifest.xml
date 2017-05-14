@@ -23,10 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".JiraWebActivity" />
+        <activity android:name=".jira.JiraWebActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".main.PreferencesActivity"
-            android:label="@string/title_activity_main" />
+            android:label="@string/title_activity_main"
+            android:screenOrientation="landscape" />
         <activity android:name=".main.MainActivity"></activity>
     </application>
 

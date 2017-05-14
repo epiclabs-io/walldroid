@@ -94,6 +94,12 @@
     <string name="pref_desc_cycle_period">Time between slide transitionsin seconds</string>
     <string name="pref_title_transition_fx">Transition effect</string>
     <string name="pref_desc_transition_fx">Animation shown to change slides</string>
+    <string name="APP_NAME">Walldroid</string>
+    <string name="JIRA_USERNAME">JIRA_USERNAME</string>
+    <string name="JIRA_PASSWORD">JIRA_PASSWORD</string>
+    <string name="JIRA_HOST">JIRA_HOST</string>
+    <string name="JIRA_WALLBOARD_ID">JIRA_WALLBOARD_ID</string>
+    <string name="FIELD_REQUIRED">This field is required</string>
     <string-array name="pref_list_transition_fx">
         <item>Scroll left</item>
         <item>Scroll right</item>

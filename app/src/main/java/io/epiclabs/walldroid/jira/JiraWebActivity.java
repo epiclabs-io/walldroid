@@ -1,11 +1,14 @@
-package io.epiclabs.walldroid;
+package io.epiclabs.walldroid.jira;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 
 import com.android.volley.Cache;
@@ -24,16 +27,20 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.common.Utils;
+
 /**
  * Created by adrian on 31/03/17.
  */
 public class JiraWebActivity extends AppCompatActivity {
+    public static final String REST_AUTH_1_SESSION = "/rest/auth/1/session";
     private WebView webView;
 
     // parameters
     private String username;
     private String password;
-    private String jiraHost;
+    private String host;
     private String wallboardId;
 
     private String finalUrl;
@@ -54,13 +61,13 @@ public class JiraWebActivity extends AppCompatActivity {
         transitionFx = sharedPref.getString("transition_effect", "scrollLeft");
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("USERNAME");
-        password = intent.getStringExtra("PASSWORD");
-        jiraHost = intent.getStringExtra("JIRA_HOST");
-        wallboardId = intent.getStringExtra("WALLBOARD_ID");
+        username = intent.getStringExtra(getString(R.string.JIRA_USERNAME));
+        password = intent.getStringExtra(getString(R.string.JIRA_PASSWORD));
+        host = intent.getStringExtra(getString(R.string.JIRA_HOST));
+        wallboardId = intent.getStringExtra(getString(R.string.JIRA_WALLBOARD_ID));
 
-        if (jiraHost.endsWith("/")) {
-            jiraHost = jiraHost.substring(0, jiraHost.length()-1);;
+        if (host.endsWith("/")) {
+            host = host.substring(0, host.length()-1);;
         }
 
         View decorView = getWindow().getDecorView();
@@ -71,10 +78,12 @@ public class JiraWebActivity extends AppCompatActivity {
 
 
         finalUrl = "";
-        finalUrl += jiraHost + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardId;
+        finalUrl += host + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardId;
         finalUrl += "&cyclePeriod=" + cyclePeriod;
         finalUrl += "&transitionFx=" + transitionFx;
         finalUrl += "&random=" + random;
+
+        System.out.println("--final url--" + finalUrl);
 
         doRequest(finalUrl);
 
@@ -101,8 +110,7 @@ public class JiraWebActivity extends AppCompatActivity {
             jsonBody = new JSONObject();
         }
 
-        JsonObjectRequest authRequest = new JsonObjectRequest(jiraHost + "/rest/auth/1/session",
-                jsonBody,
+        JsonObjectRequest authRequest = new JsonObjectRequest(host + REST_AUTH_1_SESSION, jsonBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -113,25 +121,31 @@ public class JiraWebActivity extends AppCompatActivity {
                             JSONObject session = response.getJSONObject("session");
                             String name = session.getString("name");
                             String value = session.getString("value");
-                            extraHeaders.put("Cookie", name +"="+ value);
-                        } catch (JSONException e) {
-                            System.out.println("--.error.--" + e.getMessage());
-                        }
 
-                        webView.loadUrl(url, extraHeaders);
-                        //mRequestQueue.add(stringRequest);
+                            webView.setWebViewClient(new JiraWebViewClient(webView, host, name, value));
+                            webView.setWebChromeClient(new JiraWebChromeClient());
+                            webView.loadUrl(url);
+                        } catch (JSONException jsonE) {
+                            System.out.println("--.error.--" + jsonE.getMessage());
+                            Utils.showAlertDialog(JiraWebActivity.this, jsonE.getMessage(),
+                                    "Authentication failed",
+                                    "Please check the provided credentials and try again.");
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error
                         System.out.println("--.error.--" + error.getMessage());
+                        Utils.showAlertDialog(JiraWebActivity.this, error.getMessage(),
+                                "Authentication failed",
+                                "Please check the provided credentials and try again.");
                     }
                 });
 
-
         // Add the request to the RequestQueue.
         mRequestQueue.add(authRequest);
+
     }
 }
+
