@@ -19,7 +19,7 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">Jira wallboard settings</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
@@ -101,11 +101,29 @@
     <string name="JIRA_WALLBOARD_ID">JIRA_WALLBOARD_ID</string>
     <string name="FIELD_REQUIRED">This field is required</string>
     <string-array name="pref_list_transition_fx">
+        <item>None</item>
+        <item>Fade</item>
+        <item>Zoom</item>
+        <item>Fade zoom</item>
         <item>Scroll left</item>
         <item>Scroll right</item>
+        <item>Scroll up</item>
+        <item>Scroll down</item>
+        <item>Blind X</item>
+        <item>Blind Y</item>
+        <item>Wipe</item>
     </string-array>
     <string-array name="pref_list_transition_fx_values">
+        <item>none</item>
+        <item>fade</item>
+        <item>zoom</item>
+        <item>fadeZoom</item>
         <item>scrollLeft</item>
         <item>scrollRight</item>
+        <item>scrollUp</item>
+        <item>scrollDown</item>
+        <item>blindX</item>
+        <item>blindY</item>
+        <item>wipe</item>
     </string-array>
 </resources>
