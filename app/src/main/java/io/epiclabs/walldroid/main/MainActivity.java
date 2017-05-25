@@ -3,13 +3,13 @@ package io.epiclabs.walldroid.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import io.epiclabs.walldroid.jira.JiraWebActivity;
 import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.jira.JiraPlayActivity;
 
 public class MainActivity extends AppCompatActivity {
     EditText usernameEditText;
@@ -23,11 +23,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        View decorView = getWindow().getDecorView();
+        // hide the status bar
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         usernameEditText = (EditText)findViewById(R.id.username);
         passEditText = (EditText)findViewById(R.id.password);
         jiraHostEditText = (EditText)findViewById(R.id.jiraHost);
         wallboardIdEditText = (EditText)findViewById(R.id.wallboardID);
-
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
 
         usernameEditText.setText(sharedPreferences.getString(getString(R.string.JIRA_USERNAME), ""));
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(MainActivity.this, JiraWebActivity.class);
+        Intent intent = new Intent(MainActivity.this, JiraPlayActivity.class);
         intent.putExtra(getString(R.string.JIRA_USERNAME), usernameEditText.getText().toString());
         intent.putExtra(getString(R.string.JIRA_PASSWORD), passEditText.getText().toString());
         intent.putExtra(getString(R.string.JIRA_HOST), jiraHostEditText.getText().toString());

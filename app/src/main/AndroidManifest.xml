@@ -15,21 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:label="@string/app_name"
             android:name=".main.SplashActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".jira.JiraWebActivity"
+        <activity android:name=".jira.JiraPlayActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".main.MainActivity"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".main.PreferencesActivity"
-            android:label="@string/title_activity_main"
             android:screenOrientation="landscape" />
-        <activity android:name=".main.MainActivity"></activity>
     </application>
 
 </manifest>

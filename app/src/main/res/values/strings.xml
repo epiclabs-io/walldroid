@@ -14,7 +14,8 @@
     </string>
     <string name="jira_username">###</string>
     <string name="jira_password">###</string>
-    <string name="title_activity_main">Main</string>
+    <string name="title_activity_main">Walldroid</string>
+    <string name="title_activity_jira">Jira wallboard</string>
 
     <!-- Strings related to Settings -->
 

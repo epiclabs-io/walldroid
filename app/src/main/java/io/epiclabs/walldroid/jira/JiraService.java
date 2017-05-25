@@ -1,14 +1,7 @@
 package io.epiclabs.walldroid.jira;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+
 import android.view.View;
-import android.webkit.CookieManager;
 import android.webkit.WebView;
 
 import com.android.volley.Cache;
@@ -27,73 +20,68 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.common.Service;
 import io.epiclabs.walldroid.common.Utils;
 
 /**
- * Created by adrian on 31/03/17.
+ * Created by adrian on 14/05/17.
  */
-public class JiraWebActivity extends AppCompatActivity {
-    public static final String REST_AUTH_1_SESSION = "/rest/auth/1/session";
-    private WebView webView;
 
-    // parameters
+public class JiraService extends Service {
     private String username;
     private String password;
-    private String host;
     private String wallboardId;
+    private Integer period;
+    private String effect;
+    private Boolean random;
 
-    private String finalUrl;
-
-    // options
-    private boolean random;
-    private Integer cyclePeriod;
-    private String transitionFx;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_jira_web);
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        random = sharedPref.getBoolean("random", false);
-        cyclePeriod = Integer.parseInt(sharedPref.getString("cycle_period", "10")) * 1000;
-        transitionFx = sharedPref.getString("transition_effect", "scrollLeft");
-
-        Intent intent = getIntent();
-        username = intent.getStringExtra(getString(R.string.JIRA_USERNAME));
-        password = intent.getStringExtra(getString(R.string.JIRA_PASSWORD));
-        host = intent.getStringExtra(getString(R.string.JIRA_HOST));
-        wallboardId = intent.getStringExtra(getString(R.string.JIRA_WALLBOARD_ID));
-
+    public JiraService(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
+        this.alias = alias;
         if (host.endsWith("/")) {
             host = host.substring(0, host.length()-1);;
         }
-
-        View decorView = getWindow().getDecorView();
-        // hide the status bar
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        this.webView = (WebView) findViewById(R.id.webview);
-
-
-        finalUrl = "";
-        finalUrl += host + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardId;
-        finalUrl += "&cyclePeriod=" + cyclePeriod;
-        finalUrl += "&transitionFx=" + transitionFx;
-        finalUrl += "&random=" + random;
-
-        System.out.println("--final url--" + finalUrl);
-
-        doRequest(finalUrl);
-
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.wallboardId = wallboardId;
+        this.period = period < 1000 ? period * 1000 : period;
+        this.effect = effect;
+        this.random = random;
     }
 
-    private void doRequest(final String url) {
+    public void addService(View view) {
+        //
+    };
+
+    public void editService(View view) {
+        //
+    };
+
+    public void playService(View view) {
+        //
+    };
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    };
+
+    public String getHost() {
+        return host;
+    };
+
+    public void setHost(String host) {
+        this.host = host;
+    };
+
+    public void initWebView(final JiraPlayActivity jiraPlayActivity, final WebView webView) {
         final RequestQueue mRequestQueue;
 
         // Instantiate the cache
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+        Cache cache = new DiskBasedCache(jiraPlayActivity.getCacheDir(), 1024 * 1024); // 1MB cap
 
         // Set up the network to use HttpURLConnection as the HTTP client.
         Network network = new BasicNetwork(new HurlStack());
@@ -110,13 +98,13 @@ public class JiraWebActivity extends AppCompatActivity {
             jsonBody = new JSONObject();
         }
 
-        JsonObjectRequest authRequest = new JsonObjectRequest(host + REST_AUTH_1_SESSION, jsonBody,
+        JsonObjectRequest authRequest = new JsonObjectRequest(host + "/rest/auth/1/session", jsonBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         // Do something with the response
                         System.out.println("--.response.--" + response.toString());
-                        Map <String, String> extraHeaders = new HashMap<String, String>();
+                        Map<String, String> extraHeaders = new HashMap<String, String>();
                         try {
                             JSONObject session = response.getJSONObject("session");
                             String name = session.getString("name");
@@ -124,10 +112,10 @@ public class JiraWebActivity extends AppCompatActivity {
 
                             webView.setWebViewClient(new JiraWebViewClient(webView, host, name, value));
                             webView.setWebChromeClient(new JiraWebChromeClient());
-                            webView.loadUrl(url);
+                            webView.loadUrl(wallboardUrl());
                         } catch (JSONException jsonE) {
                             System.out.println("--.error.--" + jsonE.getMessage());
-                            Utils.showAlertDialog(JiraWebActivity.this, jsonE.getMessage(),
+                            Utils.showAlertDialog(jiraPlayActivity, jsonE.getMessage(),
                                     "Authentication failed",
                                     "Please check the provided credentials and try again.");
                         }
@@ -137,7 +125,7 @@ public class JiraWebActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("--.error.--" + error.getMessage());
-                        Utils.showAlertDialog(JiraWebActivity.this, error.getMessage(),
+                        Utils.showAlertDialog(jiraPlayActivity, error.getMessage(),
                                 "Authentication failed",
                                 "Please check the provided credentials and try again.");
                     }
@@ -147,5 +135,11 @@ public class JiraWebActivity extends AppCompatActivity {
         mRequestQueue.add(authRequest);
 
     }
-}
 
+    private String wallboardUrl() {
+        return host + "/plugins/servlet/Wallboard/?dashboardId=" + wallboardId +
+            "&cyclePeriod=" + period +
+            "&transitionFx=" + effect +
+            "&random=" + random;
+    }
+}

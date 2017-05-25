@@ -5,10 +5,6 @@ import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 
-import com.android.volley.VolleyError;
-
-import io.epiclabs.walldroid.jira.JiraWebActivity;
-
 /**
  * Created by adrian on 14/05/17.
  */
