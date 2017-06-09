@@ -6,7 +6,7 @@ import android.view.View;
  * Created by adrian on 14/05/17.
  */
 
-public abstract class Service {
+public abstract class Plugin {
     protected String alias;
     protected String host;
 

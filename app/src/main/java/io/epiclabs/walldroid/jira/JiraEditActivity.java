@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.WebView;
 
 import io.epiclabs.walldroid.R;
 
@@ -22,7 +21,7 @@ public class JiraEditActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent = getIntent();
-        JiraService service = new JiraService(
+        JiraPlugin service = new JiraPlugin(
                 "MyJiraActivity1",
                 intent.getStringExtra(getString(R.string.JIRA_HOST)),
                 intent.getStringExtra(getString(R.string.JIRA_USERNAME)),

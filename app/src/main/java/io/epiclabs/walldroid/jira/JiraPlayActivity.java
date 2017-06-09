@@ -28,7 +28,7 @@ public class JiraPlayActivity extends AppCompatActivity  {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent = getIntent();
-        JiraService service = new JiraService(
+        JiraPlugin service = new JiraPlugin(
                 "MyJiraActivity1",
                 intent.getStringExtra(getString(R.string.JIRA_HOST)),
                 intent.getStringExtra(getString(R.string.JIRA_USERNAME)),

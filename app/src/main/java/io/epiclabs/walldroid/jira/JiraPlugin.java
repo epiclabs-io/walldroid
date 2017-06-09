@@ -20,14 +20,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.epiclabs.walldroid.core.Service;
+import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.common.Utils;
 
 /**
  * Created by adrian on 14/05/17.
  */
 
-public class JiraService extends Service {
+public class JiraPlugin extends Plugin {
     private String username;
     private String password;
     private String wallboardId;
@@ -35,7 +35,7 @@ public class JiraService extends Service {
     private String effect;
     private Boolean random;
 
-    public JiraService(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
+    public JiraPlugin(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
         this.alias = alias;
         if (host.endsWith("/")) {
             host = host.substring(0, host.length()-1);;
