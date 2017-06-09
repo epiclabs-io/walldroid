@@ -127,4 +127,6 @@
         <item>blindY</item>
         <item>wipe</item>
     </string-array>
+    <string name="title_wallboard_list">Wallboards</string>
+    <string name="title_wallboard_detail">Wallboard Detail</string>
 </resources>
