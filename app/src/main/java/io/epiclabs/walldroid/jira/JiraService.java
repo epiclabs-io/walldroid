@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.epiclabs.walldroid.common.Service;
+import io.epiclabs.walldroid.core.Service;
 import io.epiclabs.walldroid.common.Utils;
 
 /**

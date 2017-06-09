@@ -1,4 +1,4 @@
-package io.epiclabs.walldroid.common;
+package io.epiclabs.walldroid.core;
 
 import android.view.View;
 
@@ -10,13 +10,17 @@ public abstract class Service {
     protected String alias;
     protected String host;
 
-    abstract public String getAlias();
+    public String getAlias() {
+        return null;
+    }
 
-    abstract public void setAlias(String alias);
+    public void setAlias(String alias) {}
 
-    abstract public String getHost();
+    public String getHost() {
+        return null;
+    }
 
-    abstract public void setHost(String host);
+    public void setHost(String host) {}
 
     abstract public void addService(View view);
 
