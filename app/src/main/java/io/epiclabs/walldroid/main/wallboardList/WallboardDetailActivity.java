@@ -55,8 +55,7 @@ public class WallboardDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(WallboardDetailFragment.pluginAlias,
-                    getIntent().getStringExtra(WallboardDetailFragment.pluginAlias));
+            arguments.putLong(WallboardDetailFragment.pluginId, getIntent().getLongExtra(WallboardDetailFragment.pluginId, 0));
             WallboardDetailFragment fragment = new WallboardDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

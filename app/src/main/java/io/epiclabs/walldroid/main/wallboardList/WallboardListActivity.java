@@ -130,7 +130,7 @@ public class WallboardListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
+                        arguments.putLong(WallboardDetailFragment.pluginId, holder.mItem.id);
                         WallboardDetailFragment fragment = new WallboardDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -139,7 +139,7 @@ public class WallboardListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, WallboardDetailActivity.class);
-                        intent.putExtra(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
+                        intent.putExtra(WallboardDetailFragment.pluginId, holder.mItem.id);
 
                         context.startActivity(intent);
                     }
