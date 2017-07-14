@@ -4,16 +4,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+
+import com.orm.SugarRecord;
+import com.orm.dsl.Unique;
 
 /**
  * Created by adrian on 14/05/17.
  */
-
-public abstract class Plugin {
+public abstract class Plugin extends SugarRecord {
+    @Unique
     public Long id;
     protected String alias;
     protected String host;
     protected String type;
+
+    public Plugin() {
+        // Default constructor is necessary for SugarRecord
+    }
 
     public String getType() {
         return type;
@@ -36,6 +44,6 @@ public abstract class Plugin {
 
     abstract public void editService(View view);
 
-    abstract public void playService(View view);
+    abstract public void playService(View view, Activity activity);
 
 }

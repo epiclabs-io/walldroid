@@ -78,7 +78,7 @@ public class WallboardListActivity extends AppCompatActivity {
         addPluginFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PluginManager.newPlugin(new JiraPlugin("New JIRA plugin", "http://hostname", "username", "", "", 10, "", false));
+                PluginManager.newPlugin(new JiraPlugin("New JIRA plugin", "XXX", "XXX", "XXX", "10800", 10, "", false));
                 Snackbar.make(view, "New JIRA Plugin added", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 adapter.notifyDataSetChanged();

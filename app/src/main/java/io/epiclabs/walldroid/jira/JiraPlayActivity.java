@@ -9,6 +9,8 @@ import android.view.View;
 import android.webkit.WebView;
 
 import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.core.Plugin;
+import io.epiclabs.walldroid.core.PluginManager;
 
 /**
  * Created by adrian on 31/03/17.
@@ -28,20 +30,11 @@ public class JiraPlayActivity extends AppCompatActivity  {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent = getIntent();
-        JiraPlugin service = new JiraPlugin(
-                "MyJiraActivity1",
-                intent.getStringExtra(getString(R.string.JIRA_HOST)),
-                intent.getStringExtra(getString(R.string.JIRA_USERNAME)),
-                intent.getStringExtra(getString(R.string.JIRA_PASSWORD)),
-                intent.getStringExtra(getString(R.string.JIRA_WALLBOARD_ID)),
-                Integer.parseInt(sharedPref.getString("cycle_period", "10")),
-                sharedPref.getString("transition_effect", "scrollLeft"),
-                sharedPref.getBoolean("random", false)
-        );
+        JiraPlugin plugin = (JiraPlugin) PluginManager.get(intent.getLongExtra("pluginId", 0));
 
         webView = (WebView) findViewById(R.id.webview);
 
-        service.initWebView(this, webView);
+        plugin.initWebView(this, webView);
     }
 }
 

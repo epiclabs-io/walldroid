@@ -1,5 +1,6 @@
 package io.epiclabs.walldroid.main.wallboardList;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,7 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.orm.SugarRecord;
+
 import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.core.Plugin;
+import io.epiclabs.walldroid.core.PluginManager;
+import io.epiclabs.walldroid.jira.JiraPlugin;
+import io.epiclabs.walldroid.main.MainActivity;
 
 /**
  * An activity representing a single Wallboard detail screen. This
@@ -21,18 +28,20 @@ import io.epiclabs.walldroid.R;
 public class WallboardDetailActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallboard_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        final Intent intent = this.getIntent();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addPluginFab);
+        final AppCompatActivity self = this;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                launchPlugin(intent, view, self);
             }
         });
 
@@ -62,6 +71,13 @@ public class WallboardDetailActivity extends AppCompatActivity {
                     .add(R.id.wallboard_detail_container, fragment)
                     .commit();
         }
+    }
+
+    private void launchPlugin(Intent intent, View view, AppCompatActivity activity) {
+        Long id = intent.getLongExtra(WallboardDetailFragment.pluginId, 0);
+        Plugin plugin = PluginManager.get(id);
+        if (plugin != null)
+            plugin.playService(view, activity);
     }
 
     @Override

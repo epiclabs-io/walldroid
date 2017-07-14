@@ -3,6 +3,7 @@ package io.epiclabs.walldroid.jira;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import java.util.Map;
 import io.epiclabs.walldroid.R;
 import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.common.Utils;
+import io.epiclabs.walldroid.core.PluginManager;
+import io.epiclabs.walldroid.main.MainActivity;
 
 /**
  * Created by adrian on 14/05/17.
@@ -44,9 +47,10 @@ public class JiraPlugin extends Plugin {
     private Boolean random;
 
     public JiraPlugin(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
+        this.type = "JiraCloud";
         this.alias = alias;
         if (host.endsWith("/")) {
-            host = host.substring(0, host.length()-1);;
+            host = host.substring(0, host.length()-1);
         }
         this.host = host;
         this.username = username;
@@ -57,18 +61,23 @@ public class JiraPlugin extends Plugin {
         this.random = random;
     }
 
+    @Override
     public void addService(View view) {
         //
     };
 
+    @Override
     public void editService(View view) {
         //
-    };
+    }
 
-    public void playService(View view) {
-        //
-    };
-
+    @Override
+    public void playService(View view, Activity activity) {
+        Intent intent = new Intent(activity, JiraPlayActivity.class);
+        final Context context = view.getContext();
+        intent.putExtra("pluginId", this.id);
+        activity.startActivity(intent);
+    }
 
     EditText usernameEditText;
     EditText passEditText;
@@ -77,11 +86,9 @@ public class JiraPlugin extends Plugin {
     SharedPreferences sharedPreferences;
 
     public void setView(Context context, ViewGroup layout, Activity activity) {
-
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
-
 
         usernameEditText = new EditText(context);
         passEditText = new EditText(context);
@@ -98,9 +105,7 @@ public class JiraPlugin extends Plugin {
         layout.addView(passEditText, 1, layoutParams);
         layout.addView(jiraHostEditText, 2, layoutParams);
         layout.addView(wallboardIdEditText, 3, layoutParams);
-
     }
-
 
     public void initWebView(final JiraPlayActivity jiraPlayActivity, final WebView webView) {
         final RequestQueue mRequestQueue;
@@ -158,7 +163,6 @@ public class JiraPlugin extends Plugin {
 
         // Add the request to the RequestQueue.
         mRequestQueue.add(authRequest);
-
     }
 
     private String wallboardUrl() {
