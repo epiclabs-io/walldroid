@@ -18,7 +18,6 @@ public abstract class Plugin {
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -26,13 +25,9 @@ public abstract class Plugin {
     public String getAlias() {
         return alias;
     }
-
     public void setAlias(String alias) { this.alias = alias; }
 
-    public String getHost() {
-        return host;
-    }
-
+    public String getHost() { return host; }
     public void setHost(String host) { this.host = host; }
 
     abstract public void setView(Context context, ViewGroup layout, Activity activity);
