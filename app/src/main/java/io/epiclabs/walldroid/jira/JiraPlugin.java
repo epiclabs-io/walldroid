@@ -42,6 +42,31 @@ public class JiraPlugin extends Plugin {
     private String username;
     private String password;
     private String wallboardId;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getWallboardId() {
+        return wallboardId;
+    }
+
+    public void setWallboardId(String wallboardId) {
+        this.wallboardId = wallboardId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private Integer period;
     private String effect;
     private Boolean random;
