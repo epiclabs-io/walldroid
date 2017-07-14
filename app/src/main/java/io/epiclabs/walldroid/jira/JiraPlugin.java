@@ -1,8 +1,15 @@
 package io.epiclabs.walldroid.jira;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -20,14 +27,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.epiclabs.walldroid.common.Service;
+import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.common.Utils;
 
 /**
  * Created by adrian on 14/05/17.
  */
 
-public class JiraService extends Service {
+public class JiraPlugin extends Plugin {
     private String username;
     private String password;
     private String wallboardId;
@@ -35,7 +43,7 @@ public class JiraService extends Service {
     private String effect;
     private Boolean random;
 
-    public JiraService(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
+    public JiraPlugin(String alias, String host, String username, String password, String wallboardId, Integer period, String effect, Boolean random) {
         this.alias = alias;
         if (host.endsWith("/")) {
             host = host.substring(0, host.length()-1);;
@@ -61,21 +69,38 @@ public class JiraService extends Service {
         //
     };
 
-    public String getAlias() {
-        return alias;
+
+    EditText usernameEditText;
+    EditText passEditText;
+    EditText jiraHostEditText;
+    EditText wallboardIdEditText;
+    SharedPreferences sharedPreferences;
+
+    public void setView(Context context, ViewGroup layout, Activity activity) {
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+
+        usernameEditText = new EditText(context);
+        passEditText = new EditText(context);
+        jiraHostEditText = new EditText(context);
+        wallboardIdEditText = new EditText(context);
+        sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+
+        usernameEditText.setText(sharedPreferences.getString(context.getString(R.string.JIRA_USERNAME), ""));
+        passEditText.setText(sharedPreferences.getString(context.getString(R.string.JIRA_PASSWORD), ""));
+        jiraHostEditText.setText(sharedPreferences.getString(context.getString(R.string.JIRA_HOST), ""));
+        wallboardIdEditText.setText(sharedPreferences.getString(context.getString(R.string.JIRA_WALLBOARD_ID), ""));
+
+        layout.addView(usernameEditText, 0, layoutParams);
+        layout.addView(passEditText, 1, layoutParams);
+        layout.addView(jiraHostEditText, 2, layoutParams);
+        layout.addView(wallboardIdEditText, 3, layoutParams);
+
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    };
-
-    public String getHost() {
-        return host;
-    };
-
-    public void setHost(String host) {
-        this.host = host;
-    };
 
     public void initWebView(final JiraPlayActivity jiraPlayActivity, final WebView webView) {
         final RequestQueue mRequestQueue;

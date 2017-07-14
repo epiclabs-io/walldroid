@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.main.wallboardList.WallboardListActivity;
 
 /**
  * Created by adrian on 31/03/17.
@@ -29,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, WallboardListActivity.class);
                     startActivity(intent);
                 }
             }
