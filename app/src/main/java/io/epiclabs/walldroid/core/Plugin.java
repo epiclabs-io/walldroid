@@ -10,6 +10,7 @@ import android.view.ViewGroup;
  */
 
 public abstract class Plugin {
+    public Long id;
     protected String alias;
     protected String host;
     protected String type;

@@ -9,26 +9,21 @@ import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.jira.JiraPlugin;
 
 public class PluginManager {
-
+    private static long idGenerator = 1;
     public static final List<Plugin> plugins = new ArrayList<Plugin>();
-    public static final Map<String, Plugin> pluginsMap = new HashMap<String, Plugin>();
 
-    private static final int COUNT = 3;
+    public static void newPlugin(Plugin plugin) {
+        plugin.id = idGenerator;
+        idGenerator++;
+        plugins.add(plugin);
+    }
 
-    static {
-        // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
-            addItem(createPlugin(i));
+    public static Plugin get(long id) {
+        for (Plugin p : plugins) {
+            if(p.id == id) {
+                return p;
+            }
         }
+        return null;
     }
-
-    private static void addItem(Plugin item) {
-        plugins.add(item);
-        pluginsMap.put(item.getAlias(), item);
-    }
-
-    private static Plugin createPlugin(int position) {
-        return new JiraPlugin("alias " + position, "host" + position + "00", "username", "password", "wallboard id", 123, "effect string", false);
-    }
-
 }

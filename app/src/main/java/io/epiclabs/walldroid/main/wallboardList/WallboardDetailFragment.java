@@ -14,7 +14,7 @@ import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.core.PluginManager;
 
 public class WallboardDetailFragment extends Fragment {
-    public static final String pluginAlias = "item_id";
+    public static final String pluginId = "pluginId";
 
 
     private Plugin plugin;
@@ -28,8 +28,8 @@ public class WallboardDetailFragment extends Fragment {
 
 
 
-        if (getArguments().containsKey(pluginAlias)) {
-            plugin = PluginManager.pluginsMap.get(getArguments().getString(pluginAlias));
+        if (getArguments().containsKey(pluginId)) {
+            plugin = PluginManager.get(getArguments().getLong(pluginId));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -47,7 +47,7 @@ public class WallboardDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (plugin != null) {
             TextView a = ((TextView) rootView.findViewById(R.id.wallboard_detail));
-            a.setText(plugin.getAlias() + "(" + plugin.getHost() + ")");
+            a.setText("id: " + plugin.id + ", alias: " + plugin.getAlias() + ", host: " + plugin.getHost());
 //            plugin.setView(getContext(), container, getActivity());
         }
 

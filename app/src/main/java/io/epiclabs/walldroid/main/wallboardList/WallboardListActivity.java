@@ -21,6 +21,7 @@ import io.epiclabs.walldroid.R;
 import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.core.PluginManager;
 import io.epiclabs.walldroid.jira.JiraPlayActivity;
+import io.epiclabs.walldroid.jira.JiraPlugin;
 import io.epiclabs.walldroid.main.MainActivity;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class WallboardListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    private SimpleItemRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +78,10 @@ public class WallboardListActivity extends AppCompatActivity {
         addPluginFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                PluginManager.newPlugin(new JiraPlugin("New JIRA plugin", "http://hostname", "username", "", "", 10, "", false));
+                Snackbar.make(view, "New JIRA Plugin added", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -94,7 +99,8 @@ public class WallboardListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(PluginManager.plugins));
+        adapter = new SimpleItemRecyclerViewAdapter(PluginManager.plugins);
+        recyclerView.setAdapter(adapter);
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -124,7 +130,7 @@ public class WallboardListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
+                        arguments.putLong(WallboardDetailFragment.pluginId, holder.mItem.id);
                         WallboardDetailFragment fragment = new WallboardDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -133,7 +139,7 @@ public class WallboardListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, WallboardDetailActivity.class);
-                        intent.putExtra(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
+                        intent.putExtra(WallboardDetailFragment.pluginId, holder.mItem.id);
 
                         context.startActivity(intent);
                     }
