@@ -9,7 +9,6 @@ import android.view.View;
 import android.webkit.WebView;
 
 import io.epiclabs.walldroid.R;
-import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.core.PluginManager;
 
 /**
@@ -30,8 +29,7 @@ public class JiraPlayActivity extends AppCompatActivity  {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent = getIntent();
-        JiraPlugin plugin = (JiraPlugin) PluginManager.get(intent.getLongExtra("pluginId", 0));
-
+        JiraPlugin plugin = (JiraPlugin) PluginManager.get(PluginManager.PluginType.JIRA_CLOUD, intent.getLongExtra("pluginId", 0));
         webView = (WebView) findViewById(R.id.webview);
 
         plugin.initWebView(this, webView);

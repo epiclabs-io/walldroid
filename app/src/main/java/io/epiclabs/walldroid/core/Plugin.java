@@ -4,39 +4,36 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.orm.SugarRecord;
-import com.orm.dsl.Unique;
 
 /**
  * Created by adrian on 14/05/17.
  */
 public abstract class Plugin extends SugarRecord {
-    @Unique
-    public Long id;
     protected String alias;
     protected String host;
-    protected String type;
+    protected PluginManager.PluginType type;
 
-    public Plugin() {
-        // Default constructor is necessary for SugarRecord
-    }
-
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
+    public PluginManager.PluginType getType() { return type; }
+    public long setType(PluginManager.PluginType type) {
         this.type = type;
+        return save();
     }
 
     public String getAlias() {
         return alias;
     }
-    public void setAlias(String alias) { this.alias = alias; }
+    public long setAlias(String alias) {
+        this.alias = alias;
+        return save();
+    }
 
     public String getHost() { return host; }
-    public void setHost(String host) { this.host = host; }
+    public long setHost(String host) {
+        this.host = host;
+        return save();
+    }
 
     abstract public void setView(Context context, ViewGroup layout, Activity activity);
 

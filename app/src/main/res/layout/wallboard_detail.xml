@@ -56,40 +56,7 @@ android:orientation="vertical">
         android:orientation="vertical"
         android:id="@+id/jira_settings">
 
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="JIRA Settings" />
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="User"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/wallboardID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Wallboard ID"
-            android:inputType="number" />
-
+        <include layout="@layout/jira_plugin_details"/>
 
         <Button
             android:id="@+id/settings_button"

@@ -1,23 +1,17 @@
 package io.epiclabs.walldroid.main.wallboardList;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import com.orm.SugarRecord;
+import android.view.View;
 
 import io.epiclabs.walldroid.R;
 import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.core.PluginManager;
-import io.epiclabs.walldroid.jira.JiraPlugin;
-import io.epiclabs.walldroid.main.MainActivity;
 
 /**
  * An activity representing a single Wallboard detail screen. This
@@ -65,6 +59,7 @@ public class WallboardDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putLong(WallboardDetailFragment.pluginId, getIntent().getLongExtra(WallboardDetailFragment.pluginId, 0));
+            arguments.putSerializable("pluginType", PluginManager.PluginType.JIRA_CLOUD);
             WallboardDetailFragment fragment = new WallboardDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -75,7 +70,8 @@ public class WallboardDetailActivity extends AppCompatActivity {
 
     private void launchPlugin(Intent intent, View view, AppCompatActivity activity) {
         Long id = intent.getLongExtra(WallboardDetailFragment.pluginId, 0);
-        Plugin plugin = PluginManager.get(id);
+        // TODO: type needs to be inferred
+        Plugin plugin = PluginManager.get(PluginManager.PluginType.JIRA_CLOUD, id);
         if (plugin != null)
             plugin.playService(view, activity);
     }
