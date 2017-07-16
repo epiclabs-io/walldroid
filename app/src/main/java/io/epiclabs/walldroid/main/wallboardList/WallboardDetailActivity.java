@@ -3,14 +3,15 @@ package io.epiclabs.walldroid.main.wallboardList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import io.epiclabs.walldroid.R;
+import io.epiclabs.walldroid.core.Plugin;
+import io.epiclabs.walldroid.core.PluginManager;
 
 /**
  * An activity representing a single Wallboard detail screen. This
@@ -21,18 +22,20 @@ import io.epiclabs.walldroid.R;
 public class WallboardDetailActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallboard_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        final Intent intent = this.getIntent();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addPluginFab);
+        final AppCompatActivity self = this;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                launchPlugin(intent, view, self);
             }
         });
 
@@ -55,14 +58,22 @@ public class WallboardDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(WallboardDetailFragment.pluginAlias,
-                    getIntent().getStringExtra(WallboardDetailFragment.pluginAlias));
+            arguments.putLong(WallboardDetailFragment.pluginId, getIntent().getLongExtra(WallboardDetailFragment.pluginId, 0));
+            arguments.putSerializable("pluginType", PluginManager.PluginType.JIRA_CLOUD);
             WallboardDetailFragment fragment = new WallboardDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.wallboard_detail_container, fragment)
                     .commit();
         }
+    }
+
+    private void launchPlugin(Intent intent, View view, AppCompatActivity activity) {
+        Long id = intent.getLongExtra(WallboardDetailFragment.pluginId, 0);
+        // TODO: type needs to be inferred
+        Plugin plugin = PluginManager.get(PluginManager.PluginType.JIRA_CLOUD, id);
+        if (plugin != null)
+            plugin.playService(view, activity);
     }
 
     @Override

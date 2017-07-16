@@ -2,28 +2,24 @@ package io.epiclabs.walldroid.main.wallboardList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.List;
 
 import io.epiclabs.walldroid.R;
 import io.epiclabs.walldroid.core.Plugin;
 import io.epiclabs.walldroid.core.PluginManager;
-import io.epiclabs.walldroid.jira.JiraPlayActivity;
-import io.epiclabs.walldroid.main.MainActivity;
-
-import java.util.List;
+import io.epiclabs.walldroid.jira.JiraPlugin;
 
 /**
  * An activity representing a list of Wallboards. This activity
@@ -34,38 +30,18 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class WallboardListActivity extends AppCompatActivity {
-    EditText usernameEditText;
-    EditText passEditText;
-    EditText jiraHostEditText;
-    EditText wallboardIdEditText;
-    SharedPreferences sharedPreferences;
-
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
 
+    private SimpleItemRecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallboard_list);
-
-//        View decorView = getWindow().getDecorView();
-//        // hide the status bar
-//        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
-//        decorView.setSystemUiVisibility(uiOptions);
-//
-//        usernameEditText = (EditText)findViewById(R.id.username);
-//        passEditText = (EditText)findViewById(R.id.password);
-//        jiraHostEditText = (EditText)findViewById(R.id.jiraHost);
-//        wallboardIdEditText = (EditText)findViewById(R.id.wallboardID);
-//        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-//
-//        usernameEditText.setText(sharedPreferences.getString(getString(R.string.JIRA_USERNAME), ""));
-//        passEditText.setText(sharedPreferences.getString(getString(R.string.JIRA_PASSWORD), ""));
-//        jiraHostEditText.setText(sharedPreferences.getString(getString(R.string.JIRA_HOST), ""));
-//        wallboardIdEditText.setText(sharedPreferences.getString(getString(R.string.JIRA_WALLBOARD_ID), ""));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,8 +51,9 @@ public class WallboardListActivity extends AppCompatActivity {
         addPluginFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                PluginManager.newPlugin(new JiraPlugin("New JIRA plugin", "https://XXX.atlassian.net", "XXX", "XXX", "10800", 10, "", false));
+                Snackbar.make(view, "New JIRA Plugin added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -94,7 +71,8 @@ public class WallboardListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(PluginManager.plugins));
+        adapter = new SimpleItemRecyclerViewAdapter(PluginManager.plugins);
+        recyclerView.setAdapter(adapter);
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -122,21 +100,21 @@ public class WallboardListActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
-                        WallboardDetailFragment fragment = new WallboardDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.wallboard_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, WallboardDetailActivity.class);
-                        intent.putExtra(WallboardDetailFragment.pluginAlias, holder.mItem.getAlias());
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putLong(WallboardDetailFragment.pluginId, holder.mItem.getId());
+                    WallboardDetailFragment fragment = new WallboardDetailFragment();
+                    fragment.setArguments(arguments);
 
-                        context.startActivity(intent);
-                    }
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.wallboard_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, WallboardDetailActivity.class);
+                    intent.putExtra(WallboardDetailFragment.pluginId, holder.mItem.getId());
+                    context.startActivity(intent);
+                }
                 }
             });
         }
@@ -145,41 +123,6 @@ public class WallboardListActivity extends AppCompatActivity {
         public int getItemCount() {
             return mValues.size();
         }
-
-//        public void go(View view)
-//        {
-//            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-//            sharedPreferencesEditor.putString(getString(R.string.JIRA_USERNAME), usernameEditText.getText().toString());
-//            sharedPreferencesEditor.putString(getString(R.string.JIRA_PASSWORD), passEditText.getText().toString());
-//            sharedPreferencesEditor.putString(getString(R.string.JIRA_HOST), jiraHostEditText.getText().toString());
-//            sharedPreferencesEditor.putString(getString(R.string.JIRA_WALLBOARD_ID), wallboardIdEditText.getText().toString());
-//            sharedPreferencesEditor.apply();
-//
-//            if (usernameEditText.getText().toString().trim().equalsIgnoreCase("")) {
-//                usernameEditText.setError(getString(R.string.FIELD_REQUIRED));
-//                return;
-//            }
-//            if (passEditText.getText().toString().trim().equalsIgnoreCase("")) {
-//                passEditText.setError(getString(R.string.FIELD_REQUIRED));
-//                return;
-//            }
-//            if (jiraHostEditText.getText().toString().trim().equalsIgnoreCase("")) {
-//                jiraHostEditText.setError(getString(R.string.FIELD_REQUIRED));
-//                return;
-//            }
-//            if (wallboardIdEditText.getText().toString().trim().equalsIgnoreCase("")) {
-//                wallboardIdEditText.setError(getString(R.string.FIELD_REQUIRED));
-//                return;
-//            }
-//
-//            Intent intent = new Intent(WallboardListActivity.this, JiraPlayActivity.class);
-//            intent.putExtra(getString(R.string.JIRA_USERNAME), usernameEditText.getText().toString());
-//            intent.putExtra(getString(R.string.JIRA_PASSWORD), passEditText.getText().toString());
-//            intent.putExtra(getString(R.string.JIRA_HOST), jiraHostEditText.getText().toString());
-//            intent.putExtra(getString(R.string.JIRA_WALLBOARD_ID), wallboardIdEditText.getText().toString());
-//
-//            startActivity(intent);
-//        }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;

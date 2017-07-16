@@ -13,10 +13,9 @@ public class Utils {
     public static void showAlertDialog(final AppCompatActivity activity, String errorMssg, String title, String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(title);
-        errorMssg = errorMssg.trim();
         if (errorMssg != null && errorMssg != "") {
+            errorMssg = errorMssg.trim();
             message += "<p>" + errorMssg + "</p>";
-
         }
         alertDialog.setMessage(Html.fromHtml(message));
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
